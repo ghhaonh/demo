@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { UpdateEmailShema } from "@/schemas/account";
 import { useTransition } from "react";
 import { Spinner } from "@/components/common/spinner";
+import { updateEmail } from "@/actions/auth/update-email";
 
 interface Props {
   initialData?: {
@@ -47,7 +48,7 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
 
   const onSubmit = (values: z.infer<typeof UpdateEmailShema>) => {
     startTransition(() => {
-      console.log(values);
+      updateEmail(values);
     });
   };
   return (
