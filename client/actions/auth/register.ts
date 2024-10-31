@@ -22,5 +22,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       error: "Đăng ký không thành công",
     };
   }
+
   return { success: "Đăng ký thành công" };
 };

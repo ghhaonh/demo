@@ -3,8 +3,8 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import {
   Card,
@@ -23,37 +23,35 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/common/spinner";
-import { FormError } from "@/components/common/form-error";
 
-import { UpdateUserShema } from "@/schemas/account";
-import { updateUser } from "@/actions/auth/update-user";
-import { useRouter } from "next/navigation";
+import { UpdatePasswordShema } from "@/schemas/account";
+import { useTransition } from "react";
+import { Spinner } from "@/components/common/spinner";
+import { updatePassword } from "@/actions/auth/update-password";
 
 interface Props {
   initialData?: {
-    username: string;
-    first_name: string;
-    last_name: string;
+    new_email: string;
+    re_new_email: string;
+    current_password: string;
   };
 }
 
-export const UpdateUserForm = ({ initialData }: Props) => {
+export const UpdatePasswordForm = ({ initialData }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | undefined>("");
-  const form = useForm<z.infer<typeof UpdateUserShema>>({
-    resolver: zodResolver(UpdateUserShema),
+  const form = useForm<z.infer<typeof UpdatePasswordShema>>({
+    resolver: zodResolver(UpdatePasswordShema),
     defaultValues: initialData || {
-      first_name: "",
-      last_name: "",
-      username: "",
+      new_password: "",
+      re_new_password: "",
+      current_password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof UpdateUserShema>) => {
+  const onSubmit = (values: z.infer<typeof UpdatePasswordShema>) => {
     startTransition(() => {
-      updateUser(values).then((res) => {
+      updatePassword(values).then((res) => {
         if (res.success) {
           toast.success(res.success);
           router.refresh();
@@ -64,10 +62,10 @@ export const UpdateUserForm = ({ initialData }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tài khoản</CardTitle>
+        <CardTitle>Email</CardTitle>
         <CardDescription>
-          Thực hiện thay đổi thông tin tài khoản của bạn tại đây. nhấn hoàn
-          thành khi bạn đã hoàn tất.
+          Thực hiện thay đổi email của bạn tại đây. Nhấn hoàn thành khi bạn đã
+          hoàn tất.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -75,12 +73,16 @@ export const UpdateUserForm = ({ initialData }: Props) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="new_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
-                    <Input placeholder="nguyenvana" {...field} type="text" />
+                    <Input
+                      placeholder="nguyenvana"
+                      {...field}
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,12 +90,16 @@ export const UpdateUserForm = ({ initialData }: Props) => {
             />
             <FormField
               control={form.control}
-              name="first_name"
+              name="new_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Họ</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nguyễn" {...field} type="text" />
+                    <Input
+                      placeholder="nguyenvana@example.com"
+                      {...field}
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,20 +107,17 @@ export const UpdateUserForm = ({ initialData }: Props) => {
             />
             <FormField
               control={form.control}
-              name="last_name"
+              name="current_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên</FormLabel>
+                  <FormLabel>Mật khẩu hiện tại</FormLabel>
                   <FormControl>
-                    <Input placeholder="Văn A" {...field} type="text" />
+                    <Input placeholder="********" {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <FormError message={error} />
-
             <Button className="" type="submit" disabled={isPending}>
               <span>Lưu thay đổi</span>
               {isPending && <Spinner />}

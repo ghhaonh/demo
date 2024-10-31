@@ -110,29 +110,66 @@ export const UpdateUserShema = z.object({
     }, "Username không khả dụng"),
 });
 
-export const UpdateEmailShema = z.object({
-  new_email: z
-    .string()
-    .email({
-      message: "Email không đúng định dạng",
-    })
-    .min(1, {
-      message: "Email không được để trống",
-    }),
-  re_new_email: z
-    .string()
-    .email({
-      message: "Email không đúng định dạng",
-    })
-    .min(1, {
-      message: "Email không được để trống",
-    }),
-  current_password: z
-    .string()
-    .min(8, {
-      message: "Mật khẩu ít nhất 8 ký tự",
-    })
-    .max(24, {
-      message: "Mật khẩu tối đa 24 ký tự",
-    }),
-});
+export const UpdateEmailShema = z
+  .object({
+    new_email: z
+      .string()
+      .email({
+        message: "Email không đúng định dạng",
+      })
+      .min(1, {
+        message: "Email không được để trống",
+      }),
+    re_new_email: z
+      .string()
+      .email({
+        message: "Email không đúng định dạng",
+      })
+      .min(1, {
+        message: "Email không được để trống",
+      }),
+    current_password: z
+      .string()
+      .min(8, {
+        message: "Mật khẩu ít nhất 8 ký tự",
+      })
+      .max(24, {
+        message: "Mật khẩu tối đa 24 ký tự",
+      }),
+  })
+  .refine((data) => data.new_email === data.re_new_email, {
+    message: "Email xác nhận không khớp",
+    path: ["re_new_email"],
+  });
+
+export const UpdatePasswordShema = z
+  .object({
+    new_password: z
+      .string()
+      .min(8, {
+        message: "Mật khẩu không được để trống",
+      })
+      .max(24, {
+        message: "Mật khẩu tối đa 24 ký tự",
+      }),
+    re_new_password: z
+      .string()
+      .min(8, {
+        message: "Mật khẩu không được để trống",
+      })
+      .max(24, {
+        message: "Mật khẩu tối đa 24 ký tự",
+      }),
+    current_password: z
+      .string()
+      .min(8, {
+        message: "Mật khẩu ít nhất 8 ký tự",
+      })
+      .max(24, {
+        message: "Mật khẩu tối đa 24 ký tự",
+      }),
+  })
+  .refine((data) => data.new_password === data.re_new_password, {
+    message: "Email xác nhận không khớp",
+    path: ["re_new_password"],
+  });

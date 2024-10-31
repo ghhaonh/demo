@@ -15,5 +15,13 @@ export const updateEmail = async (values: z.infer<typeof UpdateEmailShema>) => {
         Authorization: `Bearer ${session?.user.access}`,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    return {
+      error: "Cập nhật không thành công",
+    };
+  }
+
+  return {
+    success: "Cập nhật thành công",
+  };
 };

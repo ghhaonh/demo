@@ -5,12 +5,14 @@ import { z } from "zod";
 import axios from "@/lib/axios";
 import { auth } from "@/auth";
 
-import { UpdateUserShema } from "@/schemas/account";
+import { UpdatePasswordShema } from "@/schemas/account";
 
-export const updateUser = async (values: z.infer<typeof UpdateUserShema>) => {
+export const updatePassword = async (
+  values: z.infer<typeof UpdatePasswordShema>
+) => {
   const session = await auth();
   try {
-    await axios.patch("auth/users/me/", values, {
+    await axios.post("auth/users/set_password/", values, {
       headers: {
         Authorization: `Bearer ${session?.user.access}`,
       },

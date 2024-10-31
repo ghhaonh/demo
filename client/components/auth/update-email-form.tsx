@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import {
   Card,
@@ -36,6 +38,7 @@ interface Props {
 }
 
 export const UpdateEmailForm = ({ initialData }: Props) => {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof UpdateEmailShema>>({
     resolver: zodResolver(UpdateEmailShema),
@@ -48,7 +51,12 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
 
   const onSubmit = (values: z.infer<typeof UpdateEmailShema>) => {
     startTransition(() => {
-      updateEmail(values);
+      updateEmail(values).then((res) => {
+        if (res.success) {
+          toast.success(res.success);
+          router.refresh();
+        }
+      });
     });
   };
   return (
@@ -70,7 +78,11 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
                 <FormItem>
                   <FormLabel>Email mới</FormLabel>
                   <FormControl>
-                    <Input placeholder="nguyenvana" {...field} type="text" />
+                    <Input
+                      placeholder="nguyenvana@example.com"
+                      {...field}
+                      type="email"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,12 +93,12 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
               name="re_new_email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nhập lại Email</FormLabel>
+                  <FormLabel>Xác nhận email</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="nguyenvana@example.com"
                       {...field}
-                      type="text"
+                      type="email"
                     />
                   </FormControl>
                   <FormMessage />
