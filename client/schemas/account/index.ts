@@ -46,6 +46,7 @@ export const RegisterSchema = z
       })
       .refine(async (username) => {
         const exist = await existUserByUsername(username);
+        console.log(exist);
         return !exist;
       }, "Username không khả dụng"),
     email: z
@@ -99,6 +100,9 @@ export const UpdateUserShema = z.object({
     .max(32, {
       message: "Tối đa 32 ký tự",
     }),
+});
+
+export const UpdateUsernameShema = z.object({
   username: z
     .string()
     .min(1, {
@@ -119,7 +123,11 @@ export const UpdateEmailShema = z
       })
       .min(1, {
         message: "Email không được để trống",
-      }),
+      })
+      .refine(async (email) => {
+        const exist = await existUserByEmail(email);
+        return !exist;
+      }, "Email không khả dụng"),
     re_new_email: z
       .string()
       .email({

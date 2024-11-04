@@ -4,7 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/common/header";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
-
+import AutoSignOutRefreshExpires from "@/hooks/auto-signout-refresh-expires";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -34,6 +34,7 @@ export default function RootLayout({
         <SessionProvider>
           <Header />
           <main className="max-w-8xl mx-auto">{children}</main>
+          <AutoSignOutRefreshExpires />
         </SessionProvider>
         <Toaster />
       </body>

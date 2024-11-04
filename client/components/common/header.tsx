@@ -1,5 +1,5 @@
 import { Logo } from "@/components/common/logo";
-import { UserButton } from "../auth/user-button";
+import { UserButton } from "@/components/auth/user-button";
 
 export const Header = () => {
   return (
@@ -8,6 +8,7 @@ export const Header = () => {
         <div className="py-4 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 mx-4 lg:mx-0">
           <div className="flex items-center">
             <Logo href="/" />
+            <div className="ml-10">navigation</div>
             <div className="ml-auto flex items-center space-x-4">
               <UserButton />
             </div>

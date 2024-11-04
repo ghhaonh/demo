@@ -27,48 +27,46 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/common/spinner";
 import { FormError } from "@/components/common/form-error";
 
-import { UpdateUserShema } from "@/schemas/account";
+import { UpdateUsernameShema } from "@/schemas/account";
 import { updateUser } from "@/actions/auth/update-user";
 
 interface Props {
   initialData?: {
-    first_name: string;
-    last_name: string;
+    username: string;
   };
 }
 
-export const UpdateUserForm = ({ initialData }: Props) => {
+export const UpdateUsernameForm = ({ initialData }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
 
-  const form = useForm<z.infer<typeof UpdateUserShema>>({
-    resolver: zodResolver(UpdateUserShema),
+  const form = useForm<z.infer<typeof UpdateUsernameShema>>({
+    resolver: zodResolver(UpdateUsernameShema),
     defaultValues: initialData || {
-      first_name: "",
-      last_name: "",
+      username: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof UpdateUserShema>) => {
+  const onSubmit = async (values: z.infer<typeof UpdateUsernameShema>) => {
     startTransition(() => {
-      updateUser(values).then((res) => {
-        if (res.success) {
-          toast.success(res.success);
-          router.refresh();
-        } else if (res.error) {
-          setError(res.error);
-        }
-      });
+      // updateUser(values).then((res) => {
+      //   if (res.success) {
+      //     toast.success(res.success);
+      //     router.refresh();
+      //   } else if (res.error) {
+      //     setError(res.error);
+      //   }
+      // });
     });
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tài khoản</CardTitle>
+        <CardTitle>Tên người dùng</CardTitle>
         <CardDescription>
-          Thực hiện thay đổi thông tin tài khoản của bạn tại đây. nhấn hoàn
+          Thực hiện thay đổi tên người dùng tài khoản của bạn tại đây. Nhấn hoàn
           thành khi bạn đã hoàn tất.
         </CardDescription>
       </CardHeader>
@@ -77,25 +75,12 @@ export const UpdateUserForm = ({ initialData }: Props) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="first_name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Họ</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nguyễn" {...field} type="text" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="last_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Văn A" {...field} type="text" />
+                    <Input placeholder="nguyenvana" {...field} type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

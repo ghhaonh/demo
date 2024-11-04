@@ -19,7 +19,7 @@ export const updatePassword = async (
     });
   } catch (error) {
     return {
-      error: "Cập nhật không thành công",
+      error: "Mật khẩu hiện tại không đúng",
     };
   }
 

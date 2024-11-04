@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 import {
   Card,
@@ -23,10 +24,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/common/spinner";
+import { FormError } from "@/components/common/form-error";
 
 import { UpdatePasswordShema } from "@/schemas/account";
-import { useTransition } from "react";
-import { Spinner } from "@/components/common/spinner";
 import { updatePassword } from "@/actions/auth/update-password";
 
 interface Props {
@@ -40,6 +41,8 @@ interface Props {
 export const UpdatePasswordForm = ({ initialData }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+
   const form = useForm<z.infer<typeof UpdatePasswordShema>>({
     resolver: zodResolver(UpdatePasswordShema),
     defaultValues: initialData || {
@@ -55,17 +58,20 @@ export const UpdatePasswordForm = ({ initialData }: Props) => {
         if (res.success) {
           toast.success(res.success);
           router.refresh();
+        } else if (res.error) {
+          setError(res.error);
         }
       });
     });
   };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Email</CardTitle>
+        <CardTitle>Mật khẩu</CardTitle>
         <CardDescription>
-          Thực hiện thay đổi email của bạn tại đây. Nhấn hoàn thành khi bạn đã
-          hoàn tất.
+          Thực hiện thay đổi mật khẩu của bạn tại đây. Nhấn hoàn thành khi bạn
+          đã hoàn tất.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -78,11 +84,7 @@ export const UpdatePasswordForm = ({ initialData }: Props) => {
                 <FormItem>
                   <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="nguyenvana"
-                      {...field}
-                      type="password"
-                    />
+                    <Input placeholder="********" {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,16 +92,12 @@ export const UpdatePasswordForm = ({ initialData }: Props) => {
             />
             <FormField
               control={form.control}
-              name="new_password"
+              name="re_new_password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="nguyenvana@example.com"
-                      {...field}
-                      type="password"
-                    />
+                    <Input placeholder="********" {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,6 +116,9 @@ export const UpdatePasswordForm = ({ initialData }: Props) => {
                 </FormItem>
               )}
             />
+
+            <FormError message={error} />
+
             <Button className="" type="submit" disabled={isPending}>
               <span>Lưu thay đổi</span>
               {isPending && <Spinner />}

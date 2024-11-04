@@ -12,6 +12,7 @@ declare module "next-auth" {
     last_name: string;
     is_staff: boolean;
     is_superuser: boolean;
+    error: string;
   }
 }
 
@@ -66,14 +67,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const tokensOrError = await response.json();
 
-          if (!response.ok) throw tokensOrError;
+          if (!response.ok) {
+            token.error = "RefreshTokenError";
+            throw tokensOrError;
+          }
 
           token.access = tokensOrError.access;
           token.expires_at = tokensOrError.expires_at;
 
           return token;
         } catch (error) {
-          console.error("Error refreshing access_token", error);
           token.error = "RefreshTokenError";
           return token;
         }
@@ -88,6 +91,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.last_name = token.last_name as string;
         session.user.is_staff = token.is_staff as boolean;
         session.user.is_superuser = token.is_superuser as boolean;
+        session.user.error = token.error as string;
       }
       return session;
     },

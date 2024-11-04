@@ -17,7 +17,7 @@ export const updateEmail = async (values: z.infer<typeof UpdateEmailShema>) => {
     });
   } catch (error) {
     return {
-      error: "Cập nhật không thành công",
+      error: "Mật khẩu hiện tại không đúng",
     };
   }
 

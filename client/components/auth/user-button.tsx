@@ -1,5 +1,6 @@
 "use server";
 
+import Link from "next/link";
 import { signOut, auth } from "@/auth";
 
 import {
@@ -9,18 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-import { Button } from "../ui/button";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { getUser } from "@/actions/auth/get-user";
 
 export const UserButton = async () => {
   const session = await auth();
-  if (session) {
+  const user = await getUser();
+
+  if (session && user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger className="focus:outline-none">
           <div className="flex items-center space-x-3">
-            <span>{session?.user.name}</span>
+            <span className="font-semibold leading-none tracking-tight">
+              {user.first_name} {user.last_name}
+            </span>
             <Avatar className="h-8 w-8">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
@@ -29,14 +33,13 @@ export const UserButton = async () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem>
-            <Link href="/auth/me">Quản lý tài khoản</Link>
+            <Link href="/auth/me">Tài khoản</Link>
           </DropdownMenuItem>
           {session?.user.is_staff && (
             <DropdownMenuItem>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard">Admin</Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem>Team</DropdownMenuItem>
           <DropdownMenuItem>
             <form
               action={async () => {

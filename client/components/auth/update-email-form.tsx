@@ -3,8 +3,9 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast from "react-hot-toast";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 import {
   Card,
@@ -25,8 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { UpdateEmailShema } from "@/schemas/account";
-import { useTransition } from "react";
 import { Spinner } from "@/components/common/spinner";
+import { FormError } from "@/components/common/form-error";
 import { updateEmail } from "@/actions/auth/update-email";
 
 interface Props {
@@ -40,6 +41,8 @@ interface Props {
 export const UpdateEmailForm = ({ initialData }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+
   const form = useForm<z.infer<typeof UpdateEmailShema>>({
     resolver: zodResolver(UpdateEmailShema),
     defaultValues: initialData || {
@@ -55,10 +58,13 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
         if (res.success) {
           toast.success(res.success);
           router.refresh();
+        } else if (res.error) {
+          setError(res.error);
         }
       });
     });
   };
+
   return (
     <Card>
       <CardHeader>
@@ -118,6 +124,9 @@ export const UpdateEmailForm = ({ initialData }: Props) => {
                 </FormItem>
               )}
             />
+
+            <FormError message={error} />
+
             <Button className="" type="submit" disabled={isPending}>
               <span>Lưu thay đổi</span>
               {isPending && <Spinner />}
