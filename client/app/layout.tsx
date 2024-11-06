@@ -1,19 +1,17 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from "@/components/common/header";
+import { Roboto } from "next/font/google";
+
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Header } from "@/components/common/header";
 import { Toaster } from "react-hot-toast";
 import AutoSignOutRefreshExpires from "@/hooks/auto-signout-refresh-expires";
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const roboto = Roboto({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,16 +25,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>
-          <Header />
-          <main className="max-w-8xl mx-auto">{children}</main>
-          <AutoSignOutRefreshExpires />
-        </SessionProvider>
-        <Toaster />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${roboto} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider>
+            <Header />
+            <main className="max-w-7xl mx-auto">{children}</main>
+            <AutoSignOutRefreshExpires />
+          </SessionProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

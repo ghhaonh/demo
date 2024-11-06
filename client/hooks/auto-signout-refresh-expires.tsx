@@ -7,7 +7,7 @@ const AutoSignOutRefreshExpires = () => {
   if (session?.user.error === "RefreshTokenError") {
     signOut();
   }
-  return <div></div>;
+  return <></>;
 };
 
 export default AutoSignOutRefreshExpires;
